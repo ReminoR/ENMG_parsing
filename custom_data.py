@@ -1,0 +1,26 @@
+data_nerves = [
+	'Abductor digiti minimi, Plantaris lateralis, S1-S2',
+	'Abductor digiti minimi, Ulnaris, C8 T1',
+	'Abductor hallucis, Tibialis, l4 L5 S1',
+	'Abductor hallucis, Plantaris medialis, L5-S1',
+	'Abductor pollicis brevis, Medianus, C8 T1',
+	'Extensor digitorum brevis, Peroneus, l4 L5 S1',
+	'Gastrocnemius, Tibialis, S1-S2',
+	'Rectus femoris, Femoralis, L2-L4',
+	'Soleus, Tibialis, L5-S2',
+	'Tibialis anterior, Peroneus, L4 L5 s1',
+	'n. Medianus',
+	'n. plantaris lateralis',
+	'n. plantaris medialis',
+	'n.Peroneus superficialis, L4-S1',
+	'n. Peroneus profundus, L5-S1',
+	'n.Suralis, S1-S2',
+	'n. Ulnaris',
+	'Abductor hallucis, Tibialis, l4 L5 S1',
+	'Abductor digiti minimi, Ulnaris, C8 T1',
+	'Abductor pollicis brevis, Medianus, C8 T1',
+	'Extensor digitorum brevis, Peroneus, l4 L5 S1',
+	'Tibialis anterior, Peroneus, L4 L5 s1',
+	'Soleus, Tibialis, L5-S2'
+]
+
