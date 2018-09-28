@@ -8,8 +8,8 @@ import custom_data
 import sound
 
 DIR = 'files/'
-number_docs = len([name for name in os.listdir(DIR + '!docx') if os.path.isfile(os.path.join(DIR + '!docx', name))])
-files = os.listdir(DIR + '!docx')
+number_docs = len([name for name in os.listdir(DIR + 'pnp') if os.path.isfile(os.path.join(DIR + 'pnp', name))])
+files = os.listdir(DIR + 'pnp')
 
 def main():
 
@@ -48,14 +48,14 @@ def custom_search(pattern, folder_name):
 	print('Запрос: ' + pattern)
 
 	for i in files:
-		text = docx.get_docx_text('./' + DIR + '!docx/' + i)
+		text = docx.get_docx_text('./' + DIR + 'pnp/' + i)
 		search = re.search(r'' + pattern, text, re.S)
 		print('Проверены файлы: ' + str(count) + ' из ' + str(number_docs))
 		count += 1
 
 		if search:
 			count_found += 1
-			shutil.copyfile(r'./' + DIR + '!docx/' + i, r'./files/' + folder_name + '/' + i)
+			shutil.copyfile(r'./' + DIR + 'pnp/' + i, r'./files/' + folder_name + '/' + i)
 
 	print('Найдено по запросу: "' + pattern + '" – ' + str(count_found) + ' файлов.\r\n')
 
