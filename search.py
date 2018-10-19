@@ -50,7 +50,7 @@ def custom_search(pattern, folder_name):
 	for i in files:
 		text = docx.get_docx_text('./' + DIR + 'pnp/' + i)
 		search = re.search(r'' + pattern, text, re.S)
-		print('Проверены файлы: ' + str(count) + ' из ' + str(number_docs))
+		print('Проверены файлы: ' + str(count) + ' из ' + str(number_docs) + '. ' + i)
 		count += 1
 
 		if search:
