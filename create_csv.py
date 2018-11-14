@@ -4,6 +4,7 @@ import os, os.path
 # Custom
 import docx
 import sound
+import names
 
 path_polyneuropathy_files = 'files/pnp'
 number_docs = len([name for name in os.listdir(path_polyneuropathy_files) if os.path.isfile(os.path.join(path_polyneuropathy_files, name))])
@@ -25,16 +26,16 @@ def parse(regular_expression, text, category, end=False):
 	if search and category == 'srv_motor_7':
 		result = search.group(2) + ';' + search.group(3) + ';'
 	elif not search and category == 'srv_motor_7':
-		result = ';;'
+		result = '0;0;'
 	elif search and category == 'srv_motor_9':
 		result = search.group(2) + ';' + search.group(3) + ';' + search.group(10) + ';'	
 	elif not search and category == 'srv_motor_9':
-		result = ';;;'
+		result = '0;0;0;'
 
 	if search and category == 'srv_sensor_9':
 		result = search.group(3) + ';' + search.group(10) + ';'
 	elif not search and category == 'srv_sensor_9':
-		result = ';;'
+		result = '0;0;'
 
 	if search and category == 'f_wave_bool':
 		result = '1;'
@@ -44,7 +45,7 @@ def parse(regular_expression, text, category, end=False):
 	if search and category == 'f_wave':
 		result = search.group(2) + ';'
 	elif not search and category == 'f_wave':
-		result = ';'
+		result = '0;'
 
 	if search and category == 'h_reflex_bool':
 		result = '1;'
@@ -54,7 +55,7 @@ def parse(regular_expression, text, category, end=False):
 	if search and category == 'h_reflex':
 		result = search.group(4) + ';' + search.group(7) + ';'
 	elif not search and category == 'h_reflex':
-		result = ';;'
+		result = '0;0;'
 
 	if search and category == 'name':
 		result = search.group(2) + ';'
@@ -74,6 +75,14 @@ def parse(regular_expression, text, category, end=False):
 	elif not search and category == 'hands':
 		result = 'legs;'
 
+	if search and category == 'diagnosis_true':
+		result = '1;'
+	elif not search and category == 'diagnosis_true':
+		result = '0;'
+
+	if search and category == 'diagnosis_false':
+		result = '1'
+
 	#Удаляем последнюю ';'
 	if end:
 		result = result[:-1]
@@ -87,7 +96,7 @@ def create_csv():
 	pattern_f_wave = '\n+([\d,]+)\n+([\d,]+)'
 	pattern_hr = '\n+([\d,]+)\n+([\d,]+)\n+([\d,]+)\n+([\d,]+)\n+([\d,]+)\n+([\d,]+)'
 
-	summary_file = open('files/summary.csv', 'w', encoding='utf-8')
+	summary_file = open('files/summary.csv', 'w')
 	summary_file.write(
 		'id;' + 
 		'age;' +
@@ -99,30 +108,30 @@ def create_csv():
 		#Ноги
 		#СРВ моторная
 		# Abductor hallucis, Tibialis
-		'rAhTt_lat;' +
-		'rAhTt_ampl;' +
-		'rAhTp_lat;' +
-		'rAhTp_ampl;' +
-		'rAhTp_speed;' +
+		'rAhT1_lat;' +
+		'rAhT1_ampl;' +
+		'rAhT2_lat;' +
+		'rAhT2_ampl;' +
+		'rAhT2_speed;' +
 
-		'lAhTt_lat;' +
-		'lAhTt_ampl;' +
-		'lAhTp_lat;' +
-		'lAhTp_ampl;' +
-		'lAhTp_speed;' +
+		'lAhT1_lat;' +
+		'lAhT1_ampl;' +
+		'lAhT2_lat;' +
+		'lAhT2_ampl;' +
+		'lAhT2_speed;' +
 
 		# Extensor digitorum brevis, Peroneus
-		'r_EdbPt_lat;' +
-		'r_EdbPt_ampl;' +
-		'r_EdbPf_lat;' +
-		'r_EdbPf_ampl;' +
-		'r_EdbPf_speed;' +
+		'r_EdbP1_lat;' +
+		'r_EdbP1_ampl;' +
+		'r_EdbP2_lat;' +
+		'r_EdbP2_ampl;' +
+		'r_EdbP2_speed;' +
 
-		'l_EdbPt_lat;' +
-		'l_EdbPt_ampl;' +
-		'l_EdbPf_lat;' +
-		'l_EdbPf_ampl;' +
-		'l_EdbPf_speed;' +
+		'l_EdbP1_lat;' +
+		'l_EdbP1_ampl;' +
+		'l_EdbP2_lat;' +
+		'l_EdbP2_ampl;' +
+		'l_EdbP2_speed;' +
 
 
 		#СРВ Сенсорная
@@ -153,50 +162,7 @@ def create_csv():
 		'l_ST_hr_lat;' +
 		'l_ST_hr_h/m;' +
 
-		# #РУКИ
-		# # СРВ моторная
-		# # Abductor digiti minimi, Ulnaris
-		# 'rAdmUw_lat;' +
-		# 'rAdmUw_ampl;' +
-		# 'rAdmUu_lat;' +
-		# 'rAdmUu_ampl;' +
-		# 'rAdmUu_speed;' +
-		# 'rAdmU_f_wave;' +
-
-		# 'lAdmUw_lat;' +
-		# 'lAdmUw_ampl;' +
-		# 'lAdmUu_lat;' +
-		# 'lAdmUu_ampl;' +
-		# 'lAdmUu_speed;' +
-		# 'lAdmU_f_wave;' +
-
-		# # Abductor pollicis brevis, Medianus
-		# 'rApbMw_lat;' +
-		# 'rApbMw_ampl;' +
-		# 'rApbMu_lat;' +
-		# 'rApbMu_ampl;' +
-		# 'rApbMu_speed;' +
-		# 'rApbM_f_wave;' +
-
-		# 'lApbMw_lat;' +
-		# 'lApbMw_ampl;' +
-		# 'lApbMu_lat;' +
-		# 'lApbMu_ampl;' +
-		# 'lApbMu_speed;' +
-		# 'lApbM_f_wave;' +
-
-		# # СРВ сенсорная
-		# # n. Medianus
-		# 'r_M_ampl;' +
-		# 'r_M_speed;' +
-		# 'l_M_ampl;' +
-		# 'l_M_speed;' +
-
-		# # Ulnaris
-		# 'r_U_ampl;' +
-		# 'r_U_speed;' +
-		# 'l_U_ampl;' +
-		# 'l_U_speed;' +
+		'pnp_diagnosis' +
 
 		'\n')
 
@@ -206,20 +172,30 @@ def create_csv():
 		age = parse(r'Пациент:.+?(\d+)', text, 'age')
 		last_name = parse(r'Пациент:\s*(\w+)\s*(\w+)\s*(\w+)', text, 'last_name')
 		name = parse(r'Пациент:\s*(\w+)\s*(\w+)\s*(\w+)', text, 'name')
-		gender = parse(r'', text, 'gender')
 
+		if name[:-1] in names.man_names:
+			gender = '1;'
+		elif name[:-1] in names.woman_names:
+			gender = '0;'
+		else:
+			gender = '1;'
+		
+		#Находим руки
 		hands_legs = parse(r'(Abductor pollicis brevis, Medianus, C8 T1)|(n. Medianus)|(Abductor digiti minimi, Ulnaris, C8 T1)|(n. Ulnaris)', text, 'hands')
 
-		#Ноги
-		rAhTt = parse(r'СРВ моторная.*?пр\., Abductor hallucis, Tibialis.*?(медиальная лодыжка|предплюсна)' + pattern_srv7, text, 'srv_motor_7')
-		rAhTp = parse(r'СРВ моторная.*?пр\., Abductor hallucis, Tibialis.*?(подколенная ямка)' + pattern_srv9, text, 'srv_motor_9')
-		lAhTt = parse(r'СРВ моторная.*?лев\., Abductor hallucis, Tibialis.*?(медиальная лодыжка|предплюсна)' + pattern_srv7, text, 'srv_motor_7')
-		lAhTp = parse(r'СРВ моторная.*?лев\., Abductor hallucis, Tibialis.*?(подколенная ямка)' + pattern_srv9, text, 'srv_motor_9')
+		if hands_legs == 'hands;':
+			continue
 
-		r_EdbPt = parse(r'СРВ моторная.*?пр\., Extensor digitorum brevis, Peroneus.*?(предплюсна)' + pattern_srv7, text, 'srv_motor_7')
-		r_EdbPf = parse(r'СРВ моторная.*?пр\., Extensor digitorum brevis, Peroneus.*?(головка малоберцовой кости)' + pattern_srv9, text, 'srv_motor_9')
-		l_EdbPt = parse(r'СРВ моторная.*?лев\., Extensor digitorum brevis, Peroneus.*?(предплюсна)' + pattern_srv7, text, 'srv_motor_7')
-		l_EdbPf = parse(r'СРВ моторная.*?лев\., Extensor digitorum brevis, Peroneus.*?(головка малоберцовой кости)' + pattern_srv9, text, 'srv_motor_9')
+		#Ноги
+		rAhT1 = parse(r'СРВ моторная.*?пр\., Abductor hallucis, Tibialis.*?(медиальная лодыжка|предплюсна)' + pattern_srv7, text, 'srv_motor_7')
+		rAhT2 = parse(r'СРВ моторная.*?пр\., Abductor hallucis, Tibialis.*?(подколенная ямка)' + pattern_srv9, text, 'srv_motor_9')
+		lAhT1 = parse(r'СРВ моторная.*?лев\., Abductor hallucis, Tibialis.*?(медиальная лодыжка|предплюсна)' + pattern_srv7, text, 'srv_motor_7')
+		lAhT2 = parse(r'СРВ моторная.*?лев\., Abductor hallucis, Tibialis.*?(подколенная ямка)' + pattern_srv9, text, 'srv_motor_9')
+
+		r_EdbP1 = parse(r'СРВ моторная.*?пр\., Extensor digitorum brevis, Peroneus.*?(предплюсна)' + pattern_srv7, text, 'srv_motor_7')
+		r_EdbP2 = parse(r'СРВ моторная.*?пр\., Extensor digitorum brevis, Peroneus.*?(головка малоберцовой кости)' + pattern_srv9, text, 'srv_motor_9')
+		l_EdbP1 = parse(r'СРВ моторная.*?лев\., Extensor digitorum brevis, Peroneus.*?(предплюсна)' + pattern_srv7, text, 'srv_motor_7')
+		l_EdbP2 = parse(r'СРВ моторная.*?лев\., Extensor digitorum brevis, Peroneus.*?(головка малоберцовой кости)' + pattern_srv9, text, 'srv_motor_9')
 
 		r_S = parse(r'СРВ сенсорная.*?пр., n.Suralis.*?(1|Ср. треть голени|нижняя треть голени)' + pattern_srv9, text, 'srv_sensor_9')
 		l_S = parse(r'СРВ сенсорная.*?лев., n.Suralis.*?(1|Ср. треть голени|нижняя треть голени)' + pattern_srv9, text, 'srv_sensor_9')
@@ -236,49 +212,20 @@ def create_csv():
 
 		h_reflex = parse(r'H-рефлекс', text, 'h_reflex_bool')
 		r_ST_hr = parse(r'H-рефлекс.*?пр., Soleus, Tibialis.*?(H-рефлекс)' + pattern_hr, text, 'h_reflex')
-		l_ST_hr = parse(r'H-рефлекс.*?лев., Soleus, Tibialis.*?(H-рефлекс)' + pattern_hr, text, 'h_reflex', end=True)
+		l_ST_hr = parse(r'H-рефлекс.*?лев., Soleus, Tibialis.*?(H-рефлекс)' + pattern_hr, text, 'h_reflex')
+
+		pnp_diagnosis = parse(r'((ЭНМГ данные|ЭНМГданные)\s*(не исключают).+?(полинейропатию|полинейропатии))|(ЭНМГ признаки.+?(полинейропатии))|((ЭНМГ паттерн).+?(не исключает|характерен).+?(полинейропатии))|((Выявлены).+?(полинейропатии))', text, 'diagnosis_true', end=True)
+
+		pnp_diagnosis_false = parse(r'(Не выявлены).+?(ЭНМГ признаки|признаки|критерии).+?(полинейропатии|полинейропатических нарушений)', text, 'diagnosis_false')
+
+		if pnp_diagnosis_false == '1':
+			pnp_diagnosis = '0'
 
 
-		#Выбираем заключения
-		conclusion = text.replace('\n\n', '\n')
-		conclusion = conclusion.split('Врач функциональной диагностики')
-		conclusion = conclusion[0].split('\n')
-		len_conslusion = len(conclusion)
-		conclusion = conclusion[len_conslusion-6:len_conslusion]
+		# save_data(text, 'files/mainfile.txt', 'w', 'utf-8')
+		# if hands_legs == 'legs;':
+		# 	create_conclusion_file(text, last_name, name)
 
-		# Сохранить все данные в один текстовый файл
-		# print(hands_legs)
-		if hands_legs == 'legs;':
-			with open('files/conclusion.txt', 'a', encoding='utf-8') as conclusion_file:
-				conclusion_file.write(last_name[:-1] + ' ' + name[:-1] + '\n')
-				for i in conclusion:
-					conclusion_file.write(i + '\n')
-
-		# #Руки
-		# rAdmUw = parse(r'СРВ моторная.*?пр\., Abductor digiti minimi, Ulnaris.*?(запястье)' + pattern_srv7, text, 'srv_motor_7')
-		# rAdmUu = parse(r'СРВ моторная.*?пр\., Abductor digiti minimi, Ulnaris.*?(локтевой сгиб)' + pattern_srv9, text, 'srv_motor_9')
-		# rAdmU_f_wave = parse(r'Параметры F-волны.*?пр\., Abductor digiti minimi, Ulnaris.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave')
-		# lAdmUw = parse(r'СРВ моторная.*?лев\., Abductor digiti minimi, Ulnaris.*?(запястье)' + pattern_srv7, text, 'srv_motor_7')
-		# lAdmUu = parse(r'СРВ моторная.*?лев\., Abductor digiti minimi, Ulnaris.*?(локтевой сгиб)' + pattern_srv9, text, 'srv_motor_9')
-		# lAdmU_f_wave = parse(r'Параметры F-волны.*?лев\., Abductor digiti minimi, Ulnaris.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave')
-
-		# rApbMw = parse(r'СРВ моторная.*?пр\., Abductor pollicis brevis, Medianus.*?(запястье)' + pattern_srv7, text, 'srv_motor_7')
-		# rApbMu = parse(r'СРВ моторная.*?пр\., Abductor pollicis brevis, Medianus.*?(локтевой сгиб)' + pattern_srv9, text, 'srv_motor_9')
-		# rApbM_f_wave = parse(r'Параметры F-волны.*?пр\., Abductor pollicis brevis, Medianus.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave')
-		# lApbMw = parse(r'СРВ моторная.*?лев\., Abductor pollicis brevis, Medianus.*?(запястье)' + pattern_srv7, text, 'srv_motor_7')
-		# lApbMu = parse(r'СРВ моторная.*?лев\., Abductor pollicis brevis, Medianus.*?(локтевой сгиб)' + pattern_srv9, text, 'srv_motor_9')
-		# lApbM_f_wave = parse(r'Параметры F-волны.*?лев\., Abductor pollicis brevis, Medianus.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave')
-
-
-		# r_M = parse(r'СРВ сенсорная.*?пр., n. Medianus.*?(локтевой сгиб)' + pattern_srv9, text, 'srv_sensor_9')
-		# l_M = parse(r'СРВ сенсорная.*?лев., n. Medianus.*?(локтевой сгиб)' + pattern_srv9, text, 'srv_sensor_9')
-
-		# r_U = parse(r'СРВ сенсорная.*?пр., n. Ulnaris.*?(запястье)' + pattern_srv9, text, 'srv_sensor_9')
-		# l_U = parse(r'СРВ сенсорная.*?лев., n. Ulnaris.*?(запястье)' + pattern_srv9, text, 'srv_sensor_9')
-
-		#Сохранить все данные в один текстовый файл
-		# with open('mainfile.txt', 'a', encoding='utf-8') as main_file:
-		# 	main_file.write(text)
 
 		summary_file.write(str(count) + ';'+
 
@@ -288,15 +235,15 @@ def create_csv():
 			gender +
 			hands_legs +
 
-			rAhTt +
-			rAhTp + 
-			lAhTt +
-			lAhTp + 
+			rAhT1 +
+			rAhT2 + 
+			lAhT1 +
+			lAhT2 + 
 
-			r_EdbPt +
-			r_EdbPf +
-			l_EdbPt +
-			l_EdbPf +
+			r_EdbP1 +
+			r_EdbP2 +
+			l_EdbP1 +
+			l_EdbP2 +
 
 			r_S + 
 			l_S +
@@ -314,24 +261,7 @@ def create_csv():
 			r_ST_hr + 
 			l_ST_hr +
 
-			# rAdmUw +
-			# rAdmUu +
-			# rAdmU_f_wave +
-			# lAdmUw +
-			# lAdmUu +
-			# lAdmU_f_wave +
-
-			# rApbMw +
-			# rApbMu +
-			# rApbM_f_wave +
-			# lApbMw +
-			# lApbMu +
-			# lApbM_f_wave +
-
-			# r_M +
-			# l_M +
-			# r_U +
-			# l_U +
+			pnp_diagnosis +
 
 			'\n')
 
@@ -340,6 +270,28 @@ def create_csv():
 
 
 	summary_file.close()
+
+
+# Сохранить все данные в один текстовый файл
+def save_data(object, filename, mode, encoding):
+	with open(filename, mode, encoding=encoding) as file:
+		file.write(object)
+	return
+
+#Выбираем заключения
+def create_conclusion_file(text, last_name, name):
+	conclusion = text.replace('\n\n', '\n')
+	conclusion = conclusion.split('Врач функциональной диагностики')
+	conclusion = conclusion[0].split('\n')
+	len_conslusion = len(conclusion)
+	conclusion = conclusion[len_conslusion-6:len_conslusion]
+
+	# Сохранить все данные в один текстовый файл
+	with open('files/conclusion.txt', 'a', encoding='utf-8') as conclusion_file:
+		conclusion_file.write(last_name[:-1] + ' ' + name[:-1] + '\n')
+		for i in conclusion:
+			conclusion_file.write(i + '\n')
+
 
 if __name__ == '__main__':
 	main()
