@@ -14,8 +14,8 @@ def main():
 	create_csv()
 	sound.play()
 
-def parse(regular_expression, text, category, end=False):
-	search = re.search(regular_expression, text, re.S)
+def parse(regular_expression, text, category, flag=0, end=False):
+	search = re.search(regular_expression, text, flag)
 	result = ''
 
 	if search and category == 'age':
@@ -26,16 +26,16 @@ def parse(regular_expression, text, category, end=False):
 	if search and category == 'srv_motor_7':
 		result = search.group(2) + ';' + search.group(3) + ';'
 	elif not search and category == 'srv_motor_7':
-		result = '0;0;'
+		result = ';;' #0
 	elif search and category == 'srv_motor_9':
 		result = search.group(2) + ';' + search.group(3) + ';' + search.group(10) + ';'	
 	elif not search and category == 'srv_motor_9':
-		result = '0;0;0;'
+		result = ';;;' #0
 
 	if search and category == 'srv_sensor_9':
 		result = search.group(3) + ';' + search.group(10) + ';'
 	elif not search and category == 'srv_sensor_9':
-		result = '0;0;'
+		result = ';;' #0
 
 	if search and category == 'f_wave_bool':
 		result = '1;'
@@ -45,7 +45,7 @@ def parse(regular_expression, text, category, end=False):
 	if search and category == 'f_wave':
 		result = search.group(2) + ';'
 	elif not search and category == 'f_wave':
-		result = '0;'
+		result = ';' #0
 
 	if search and category == 'h_reflex_bool':
 		result = '1;'
@@ -55,7 +55,7 @@ def parse(regular_expression, text, category, end=False):
 	if search and category == 'h_reflex':
 		result = search.group(4) + ';' + search.group(7) + ';'
 	elif not search and category == 'h_reflex':
-		result = '0;0;'
+		result = ';;' #0
 
 	if search and category == 'name':
 		result = search.group(2) + ';'
@@ -100,10 +100,9 @@ def create_csv():
 	summary_file.write(
 		'id;' + 
 		'age;' +
-		'last_name;'
+		'last_name;' +
 		'name;' +
 		'gender;' +
-		'hands/legs;' +
 		
 		#Ноги
 		#СРВ моторная
@@ -181,48 +180,47 @@ def create_csv():
 			gender = '1;'
 		
 		#Находим руки
-		hands_legs = parse(r'(Abductor pollicis brevis, Medianus, C8 T1)|(n. Medianus)|(Abductor digiti minimi, Ulnaris, C8 T1)|(n. Ulnaris)', text, 'hands')
+		hands_legs = parse(r'(Abductor pollicis brevis, Medianus, C8 T1)|(n. Medianus)|(Abductor digiti minimi, Ulnaris, C8 T1)|(n. Ulnaris)', text, 'hands', re.S)
 
 		if hands_legs == 'hands;':
 			continue
 
 		#Ноги
-		rAhT1 = parse(r'СРВ моторная.*?пр\., Abductor hallucis, Tibialis.*?(медиальная лодыжка|предплюсна)' + pattern_srv7, text, 'srv_motor_7')
-		rAhT2 = parse(r'СРВ моторная.*?пр\., Abductor hallucis, Tibialis.*?(подколенная ямка)' + pattern_srv9, text, 'srv_motor_9')
-		lAhT1 = parse(r'СРВ моторная.*?лев\., Abductor hallucis, Tibialis.*?(медиальная лодыжка|предплюсна)' + pattern_srv7, text, 'srv_motor_7')
-		lAhT2 = parse(r'СРВ моторная.*?лев\., Abductor hallucis, Tibialis.*?(подколенная ямка)' + pattern_srv9, text, 'srv_motor_9')
+		rAhT1 = parse(r'СРВ моторная.*?пр\., Abductor hallucis, Tibialis.*?(медиальная лодыжка|предплюсна)' + pattern_srv7, text, 'srv_motor_7', re.S)
+		rAhT2 = parse(r'СРВ моторная.*?пр\., Abductor hallucis, Tibialis.*?(подколенная ямка)' + pattern_srv9, text, 'srv_motor_9', re.S)
+		lAhT1 = parse(r'СРВ моторная.*?лев\., Abductor hallucis, Tibialis.*?(медиальная лодыжка|предплюсна)' + pattern_srv7, text, 'srv_motor_7', re.S)
+		lAhT2 = parse(r'СРВ моторная.*?лев\., Abductor hallucis, Tibialis.*?(подколенная ямка)' + pattern_srv9, text, 'srv_motor_9', re.S)
 
-		r_EdbP1 = parse(r'СРВ моторная.*?пр\., Extensor digitorum brevis, Peroneus.*?(предплюсна)' + pattern_srv7, text, 'srv_motor_7')
-		r_EdbP2 = parse(r'СРВ моторная.*?пр\., Extensor digitorum brevis, Peroneus.*?(головка малоберцовой кости)' + pattern_srv9, text, 'srv_motor_9')
-		l_EdbP1 = parse(r'СРВ моторная.*?лев\., Extensor digitorum brevis, Peroneus.*?(предплюсна)' + pattern_srv7, text, 'srv_motor_7')
-		l_EdbP2 = parse(r'СРВ моторная.*?лев\., Extensor digitorum brevis, Peroneus.*?(головка малоберцовой кости)' + pattern_srv9, text, 'srv_motor_9')
+		r_EdbP1 = parse(r'СРВ моторная.*?пр\., Extensor digitorum brevis, Peroneus.*?(предплюсна)' + pattern_srv7, text, 'srv_motor_7', re.S)
+		r_EdbP2 = parse(r'СРВ моторная.*?пр\., Extensor digitorum brevis, Peroneus.*?(головка малоберцовой кости|подколенная ямка)' + pattern_srv9, text, 'srv_motor_9', re.S)
+		l_EdbP1 = parse(r'СРВ моторная.*?лев\., Extensor digitorum brevis, Peroneus.*?(предплюсна)' + pattern_srv7, text, 'srv_motor_7', re.S)
+		l_EdbP2 = parse(r'СРВ моторная.*?лев\., Extensor digitorum brevis, Peroneus.*?(головка малоберцовой кости|подколенная ямка)' + pattern_srv9, text, 'srv_motor_9', re.S)
 
-		r_S = parse(r'СРВ сенсорная.*?пр., n.Suralis.*?(1|Ср. треть голени|нижняя треть голени)' + pattern_srv9, text, 'srv_sensor_9')
-		l_S = parse(r'СРВ сенсорная.*?лев., n.Suralis.*?(1|Ср. треть голени|нижняя треть голени)' + pattern_srv9, text, 'srv_sensor_9')
+		r_S = parse(r'СРВ сенсорная.*?пр\., n.Suralis, S1-S2.*?\d+\n+(1|Ср\. треть голени|Средняя треть голени|нижняя треть голени)' + pattern_srv9, text, 'srv_sensor_9', re.S)
+		l_S = parse(r'СРВ сенсорная.*?лев\., n.Suralis, S1-S2.*?\d+\n+(1|Ср\. треть голени|Средняя треть голени|нижняя треть голени)' + pattern_srv9, text, 'srv_sensor_9', re.S)
 
-		r_Ps = parse(r'СРВ сенсорная.*?пр., n.Peroneus superficialis.*?(1|Ср. треть голени)' + pattern_srv9, text, 'srv_sensor_9')
-		l_Ps = parse(r'СРВ сенсорная.*?лев., n.Peroneus superficialis.*?(1|Ср. треть голени)' + pattern_srv9, text, 'srv_sensor_9')
-
+		r_Ps = parse(r'СРВ сенсорная.*?пр\., n.Peroneus superficialis, L4-S1.*?(1|Ср\. треть голени|Уровень лодыжек)' + pattern_srv9, text, 'srv_sensor_9', re.S)
+		l_Ps = parse(r'СРВ сенсорная.*?лев\., n.Peroneus superficialis, L4-S1.*?(1|Ср\. треть голени|Уровень лодыжек)' + pattern_srv9, text, 'srv_sensor_9', re.S)
 
 		f_wave = parse(r'Параметры F-волны', text, 'f_wave_bool')
-		rAhT_f_wave = parse(r'Параметры F-волны.*?пр\., Abductor hallucis, Tibialis.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave')
-		lAhT_f_wave = parse(r'Параметры F-волны.*?лев\., Abductor hallucis, Tibialis.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave')
-		r_EdbP_f_wave = parse(r'Параметры F-волны.*?пр\., Extensor digitorum brevis, Peroneus.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave')
-		l_EdbP_f_wave = parse(r'Параметры F-волны.*?лев\., Extensor digitorum brevis, Peroneus.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave')
+		rAhT_f_wave = parse(r'Параметры F-волны.*?пр\., Abductor hallucis, Tibialis.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave', re.S)
+		lAhT_f_wave = parse(r'Параметры F-волны.*?лев\., Abductor hallucis, Tibialis.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave', re.S)
+		r_EdbP_f_wave = parse(r'Параметры F-волны.*?пр\., Extensor digitorum brevis, Peroneus.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave', re.S)
+		l_EdbP_f_wave = parse(r'Параметры F-волны.*?лев\., Extensor digitorum brevis, Peroneus.*?\n+(\d+)' + pattern_f_wave, text, 'f_wave', re.S)
 
 		h_reflex = parse(r'H-рефлекс', text, 'h_reflex_bool')
-		r_ST_hr = parse(r'H-рефлекс.*?пр., Soleus, Tibialis.*?(H-рефлекс)' + pattern_hr, text, 'h_reflex')
-		l_ST_hr = parse(r'H-рефлекс.*?лев., Soleus, Tibialis.*?(H-рефлекс)' + pattern_hr, text, 'h_reflex')
+		r_ST_hr = parse(r'H-рефлекс.*?пр\., Soleus, Tibialis.*?(H-рефлекс)' + pattern_hr, text, 'h_reflex', re.S)
+		l_ST_hr = parse(r'H-рефлекс.*?лев\., Soleus, Tibialis.*?(H-рефлекс)' + pattern_hr, text, 'h_reflex', re.S)
 
-		pnp_diagnosis = parse(r'((ЭНМГ данные|ЭНМГданные)\s*(не исключают).+?(полинейропатию|полинейропатии))|(ЭНМГ признаки.+?(полинейропатии))|((ЭНМГ паттерн).+?(не исключает|характерен).+?(полинейропатии))|((Выявлены).+?(полинейропатии))', text, 'diagnosis_true', end=True)
+		pnp_diagnosis = parse(r'((ЭНМГ данные|ЭНМГданные)\s*(не исключают).+?(полинейропатию|полинейропатии))|(ЭНМГ признаки.+?(полинейропатии))|((ЭНМГ паттерн).+?(не исключает|характерен).+?(полинейропатии))|((Выявлены).+?(полинейропатии))', text, 'diagnosis_true', re.S, end=True)
 
-		pnp_diagnosis_false = parse(r'(Не выявлены).+?(ЭНМГ признаки|признаки|критерии).+?(полинейропатии|полинейропатических нарушений)', text, 'diagnosis_false')
+		pnp_diagnosis_false = parse(r'(Не выявлены).+?(ЭНМГ признаки|признаки|критерии).+?(полинейропатии|полинейропатических нарушений)', text, 'diagnosis_false', re.S)
 
 		if pnp_diagnosis_false == '1':
 			pnp_diagnosis = '0'
 
 
-		# save_data(text, 'files/mainfile.txt', 'w', 'utf-8')
+		save_data(text, 'files/mainfile.txt', 'a', 'utf-8')
 		# if hands_legs == 'legs;':
 		# 	create_conclusion_file(text, last_name, name)
 
@@ -233,7 +231,6 @@ def create_csv():
 			last_name +
 			name +
 			gender +
-			hands_legs +
 
 			rAhT1 +
 			rAhT2 + 
@@ -267,7 +264,6 @@ def create_csv():
 
 		print('Парсинг файлов: ' + str(count) + '/' + str(number_docs))
 		count += 1
-
 
 	summary_file.close()
 
